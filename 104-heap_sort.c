@@ -1,59 +1,58 @@
 #include "sort.h"
 
 /**
- * sift_down - Perform heap sort sift down operation
- * @array: array to sort
- * @start: start position of the heap
- * @end: end position of the heap
- * @size: size of the array
+ * heap_sort - sorts an array of integers in ascending order using the Heap sort algorithm
+ * @array: the array of integers to sort
+ * @size: the size of the array
  */
-void sift_down(int *array, size_t start, size_t end, size_t size)
+void heap_sort(int *array, size_t size)
 {
-    size_t root = start, child, swap;
+    int i, temp;
 
-    while (2 * root + 1 <= end)
+    /* Build heap */
+    for (i = size / 2 - 1; i >= 0; i--)
+        sift_down(array, size, i, size);
+
+    /* Extract elements */
+    for (i = size - 1; i > 0; i--)
     {
-        child = 2 * root + 1;
-        swap = root;
+        /* Move current root to end */
+        temp = array[0];
+        array[0] = array[i];
+        array[i] = temp;
 
-        if (array[swap] < array[child])
-            swap = child;
-
-        if (child + 1 <= end && array[swap] < array[child + 1])
-            swap = child + 1;
-
-        if (swap != root)
-        {
-            swap_ints(&array[root], &array[swap]);
-            print_array(array, size);
-            root = swap;
-        }
-        else
-            return;
+        /* Call max heapify on the reduced heap */
+        sift_down(array, i, 0, size);
     }
 }
 
 /**
- * heap_sort - sorts an array with the Heap Sort algorithm
- * @array: array of ints to sort
- * @size: size of the array
+ * sift_down - helper function to maintain the heap property
+ * @array: the array of integers to sort
+ * @n: the size of the heap
+ * @i: the index of the node to sift down
+ * @size: the size of the array
  */
-void heap_sort(int *array, size_t size)
+void sift_down(int *array, size_t n, size_t i, size_t size)
 {
-    size_t end;
+    int temp, max = i, left = 2 * i + 1, right = 2 * i + 2;
 
-    if (!array || size < 2)
-        return;
+    if (left < n && array[left] > array[max])
+        max = left;
 
-    /* Build the heap in array */
-    for (end = (size - 2) / 2; (int) end >= 0; end--)
-        sift_down(array, end, size - 1, size);
+    if (right < n && array[right] > array[max])
+        max = right;
 
-    /* Extract the elements from heap in array */
-    for (end = size - 1; end > 0; end--)
+    if (max != i)
     {
-        swap_ints(&array[end], &array[0]);
+        /* Swap elements */
+        temp = array[i];
+        array[i] = array[max];
+        array[max] = temp;
+
         print_array(array, size);
-        sift_down(array, 0, end - 1, size);
+
+        /* Recursively heapify the affected sub-tree */
+        sift_down(array, n, max, size);
     }
 }
