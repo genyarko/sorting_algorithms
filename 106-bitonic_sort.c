@@ -10,56 +10,56 @@ void bitonic_sort(int *array, size_t size)
 	if (!array || size < 2)
 		return;
 
-	recursive_bitonic_sort(array, 0, size - 1, 1, size);
+	bitonic_recursion(array, 0, size - 1, 1, size);
 }
 
 /**
- * recursive_bitonic_sort - recursive function for bitonic sort
+ * bitonic_recursion - recursive function for bitonic sort
  * @array: array to sort
- * @left: index of the left-most element
- * @right: index of the right-most element
+ * @l: index of the left-most element
+ * @r: index of the right-most element
  * @direction: ascending or descending
  * @size: size of the array
  */
-void recursive_bitonic_sort(int *array, int left, int right, int direction, size_t size)
+void bitonic_recursion(int *array, int l, int r, int direction, size_t size)
 {
-	int midpoint;
+	int step;
 
-	if (right - left >= 1)
+	if (r - l >= 1)
 	{
-		midpoint = (right + left) / 2;
-		printf("Merging [%d/%lu] ", right - left + 1, size);
+		step = (r + l) / 2;
+		printf("Merging [%d/%lu] ", r - l + 1, size);
 		if (direction)
 			printf("(UP):\n");
 		else
 			printf("(DOWN):\n");
-		print_array(array + left, right - left + 1);
-		recursive_bitonic_sort(array, left, midpoint, 1, size);
-		recursive_bitonic_sort(array, midpoint + 1, right, 0, size);
-		bitonic_merge(array, left, right, direction);
-		printf("Result [%d/%lu] ", right - left + 1, size);
+		print_array(array + l, r - l + 1);
+		bitonic_recursion(array, l, step, 1, size);
+		bitonic_recursion(array, step + 1, r, 0, size);
+		bitonic_merge(array, l, r, direction);
+		printf("Result [%d/%lu] ", r - l + 1, size);
 		if (direction)
 			printf("(UP):\n");
 		else
 			printf("(DOWN):\n");
-		print_array(array + left, right - left + 1);
+		print_array(array + l, r - l + 1);
 	}
 }
 
 /**
  * bitonic_merge - sorts and merges a sequence in ascending or descending order
  * @array: array to sort
- * @left: index of the left-most element
- * @right: index of the right-most element
+ * @l: index of the left-most element
+ * @r: index of the right-most element
  * @direction: ascending or descending
  */
-void bitonic_merge(int *array, int left, int right, int direction)
+void bitonic_merge(int *array, int l, int r, int direction)
 {
-	int tmp, i, midpoint = (left + right) / 2, mid = (right - left + 1) / 2;
+	int tmp, i, step = (l + r) / 2, mid = (r - l + 1) / 2;
 
-	if (right - left >= 1)
+	if (r - l >= 1)
 	{
-		for (i = left; i < left + mid; i++)
+		for (i = l; i < l + mid; i++)
 		{
 			if (direction == (array[i] > array[i + mid]))
 			{
@@ -68,9 +68,8 @@ void bitonic_merge(int *array, int left, int right, int direction)
 				array[i] = tmp;
 			}
 		}
-		bitonic_merge(array, left, midpoint, direction);
-		bitonic_merge(array, midpoint + 1, right, direction);
+		bitonic_merge(array, l, step, direction);
+		bitonic_merge(array, step + 1, r, direction);
 	}
-}
 
 }
