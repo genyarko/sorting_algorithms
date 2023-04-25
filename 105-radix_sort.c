@@ -1,47 +1,64 @@
-#include "sort.h"
 #include <stdlib.h>
+#include "sort.h"
 
 /**
- * radix_sort - sorts an array using Radix Sort algorithm
- * @array: array of ints to sort
- * @size: size of the array to sort
+ * radix_sort - Sorts an array of integers in ascending order using the
+ *              LSD radix sort algorithm.
+ *
+ * @array: Pointer to the integer array to sort.
+ * @size:  Size of the array to sort.
  */
 void radix_sort(int *array, size_t size)
 {
-	int *sorted_arr = NULL;
-	size_t i, j, max_num = 0, digit = 1;
+    int *tmp = NULL;
+    int max = 0;
+    size_t i, j, k;
+    unsigned int digit = 1;
 
-	if (!array || size < 2)
-		return;
+    if (array == NULL || size < 2)
+        return;
 
-	sorted_arr = malloc(sizeof(int) * size);
-	if (!sorted_arr)
-		return;
+    tmp = malloc(sizeof(int) * size);
+    if (tmp == NULL)
+        return;
 
-	for (i = 0; i < size; i++)
-		max_num = (array[i] > max_num) ? array[i] : max_num;
+    /* Find the maximum value in the array */
+    for (i = 0; i < size; i++) {
+        if (array[i] > max)
+            max = array[i];
+    }
 
-	while (max_num / digit > 0)
-	{
-		size_t count[10] = {0};
+    /* Sort the array by each digit, from least significant to most */
+    while (max / digit > 0) {
+        unsigned int count[10] = {0};
 
-		for (i = 0; i < size; i++)
-			count[(array[i] / digit) % 10]++;
+        /* Count the number of elements for each digit */
+        for (i = 0; i < size; i++)
+            count[(array[i] / digit) % 10]++;
 
-		for (i = 1; i < 10; i++)
-			count[i] += count[i - 1];
+        /* Compute the running sum of the counts */
+        for (i = 1; i < 10; i++)
+            count[i] += count[i - 1];
 
-		for (j = size - 1; (int)j >= 0; j--)
-		{
-			sorted_arr[--count[(array[j] / digit) % 10]] = array[j];
-		}
+        /* Move the elements to their correct position in the output array */
+        for (i = size - 1; i < SIZE_MAX; i--) {
+            if (count[(array[i] / digit) % 10] > 0) {
+                tmp[count[(array[i] / digit) % 10] - 1] = array[i];
+                count[(array[i] / digit) % 10]--;
+            }
+            if (i == 0)
+                break;
+        }
 
-		for (i = 0; i < size; i++)
-			array[i] = sorted_arr[i];
+        /* Copy the sorted array back to the input array */
+        for (i = 0; i < size; i++)
+            array[i] = tmp[i];
 
-		print_array(array, size);
-		digit *= 10;
-	}
+        /* Print the array after each iteration */
+        print_array(array, size);
 
-	free(sorted_arr);
+        digit *= 10;
+    }
+
+    free(tmp);
 }
