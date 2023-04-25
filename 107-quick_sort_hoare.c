@@ -1,74 +1,82 @@
 #include "sort.h"
 
 /**
- * swap - swap the values of two integers
- * @a: pointer to the first integer
- * @b: pointer to the second integer
- */
-void swap(int *a, int *b)
-{
-    int tmp = *a;
-    *a = *b;
-    *b = tmp;
-}
-
-/**
- * hoare_partition - partitions the array using the Hoare partition scheme
- * @array: array of integers to partition
- * @low: lower index of the partition to sort
- * @high: higher index of the partition to sort
- * @size: size of the array
- * Return: index of the pivot
- */
-int hoare_partition(int *array, int low, int high, size_t size)
-{
-    int pivot = array[high];
-    int i = low - 1, j = high + 1;
-
-    while (true)
-    {
-        do {
-            i++;
-        } while (array[i] < pivot);
-
-        do {
-            j--;
-        } while (array[j] > pivot);
-
-        if (i >= j)
-            return j;
-
-        swap(&array[i], &array[j]);
-        print_array(array, size);
-    }
-}
-
-/**
- * quick_sort_helper - helper function for quick sort algorithm
- * @array: array of integers to sort
- * @low: lower index of the partition to sort
- * @high: higher index of the partition to sort
- * @size: size of the array
- */
-void quick_sort_helper(int *array, int low, int high, size_t size)
-{
-    if (low < high)
-    {
-        int p = hoare_partition(array, low, high, size);
-        quick_sort_helper(array, low, p, size);
-        quick_sort_helper(array, p + 1, high, size);
-    }
-}
-
-/**
- * quick_sort_hoare - sorts an array of integers in ascending order using the Quick sort algorithm
+ * quick_sort_hoare - sorts an array of integers in ascending order
  * @array: array of integers to sort
  * @size: size of the array
+ *
+ * Return: void
  */
 void quick_sort_hoare(int *array, size_t size)
 {
-    if (array == NULL || size < 2)
-        return;
+	if (array == NULL || size < 2)
+		return;
 
-    quick_sort_helper(array, 0, size - 1, size);
+	quick_sort(array, 0, size - 1, size);
+}
+
+/**
+ * quick_sort - sorts a partition of an array of integers in ascending order
+ * @array: array of integers to sort
+ * @lo: the lowest index of the partition to sort
+ * @hi: the highest index of the partition to sort
+ * @size: size of the array
+ *
+ * Return: void
+ */
+void quick_sort(int *array, int lo, int hi, size_t size)
+{
+	int pivot;
+
+	if (lo < hi)
+	{
+		pivot = hoare_partition(array, lo, hi, size);
+		quick_sort(array, lo, pivot - 1, size);
+		quick_sort(array, pivot, hi, size);
+	}
+}
+
+/**
+ * hoare_partition - partitions an array of integers in ascending order
+ * @array: array of integers to sort
+ * @lo: the lowest index of the partition to sort
+ * @hi: the highest index of the partition to sort
+ * @size: size of the array
+ *
+ * Return: the pivot index
+ */
+int hoare_partition(int *array, int lo, int hi, size_t size)
+{
+	int pivot = array[hi], i = lo - 1, j = hi + 1;
+
+	while (1)
+	{
+		do {
+			i++;
+		} while (array[i] < pivot);
+		do {
+			j--;
+		} while (array[j] > pivot);
+
+		if (i >= j)
+			return j;
+
+		swap_int(&array[i], &array[j]);
+		print_array(array, size);
+	}
+}
+
+/**
+ * swap_int - swaps two integers in an array
+ * @a: the first integer
+ * @b: the second integer
+ *
+ * Return: void
+ */
+void swap_int(int *a, int *b)
+{
+	int temp = *a;
+
+	*a = *b;
+	*b = temp;
 }
