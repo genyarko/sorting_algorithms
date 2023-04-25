@@ -1,62 +1,24 @@
 #include <stdio.h>
-#include "sort.h"
+#include <stdlib.h>
 
-/**
- * quick_sort_hoare - Sorts an array of integers in ascending order
- * using the Quick sort algorithm with the Hoare partition scheme
- *
- * @array: Pointer to the first element of the array
- * @size: Number of elements in the array
- *
- * Return: void
- */
-void quick_sort_hoare(int *array, size_t size)
+void print_array(int *array, size_t size)
 {
-    if (!array || size < 2)
-        return;
+    size_t i;
 
-    quick_sort_hoare_helper(array, 0, size - 1, size);
-}
-
-/**
- * quick_sort_hoare_helper - Helper function for quick_sort_hoare
- *
- * @array: Pointer to the first element of the array
- * @lo: Starting index of the partition to be sorted
- * @hi: Ending index of the partition to be sorted
- * @size: Number of elements in the array
- *
- * Return: void
- */
-void quick_sort_hoare_helper(int *array, int lo, int hi, size_t size)
-{
-    int p;
-
-    if (lo < hi)
+    for (i = 0; i < size; i++)
     {
-        p = partition_hoare(array, lo, hi, size);
-        quick_sort_hoare_helper(array, lo, p, size);
-        quick_sort_hoare_helper(array, p + 1, hi, size);
+        printf("%d", array[i]);
+        if (i != size - 1)
+            printf(", ");
     }
+    printf("\n");
 }
 
-/**
- * partition_hoare - Picks the last element of the partition as pivot,
- * rearranges the array in such a way that all elements smaller than
- * the pivot are to the left of it and all greater elements are to the
- * right of it. Returns the index of the pivot element.
- *
- * @array: Pointer to the first element of the array
- * @lo: Starting index of the partition to be sorted
- * @hi: Ending index of the partition to be sorted
- * @size: Number of elements in the array
- *
- * Return: Index of the pivot element
- */
-int partition_hoare(int *array, int lo, int hi, size_t size)
+int hoare_partition(int *array, int low, int high, size_t size)
 {
-    int pivot = array[hi], tmp;
-    int i = lo - 1, j = hi + 1;
+    int pivot = array[high];
+    int i = low - 1;
+    int j = high + 1;
 
     while (1)
     {
@@ -69,14 +31,30 @@ int partition_hoare(int *array, int lo, int hi, size_t size)
         } while (array[j] > pivot);
 
         if (i >= j)
-            return (i);
+            return j;
 
-        if (i != j)
-        {
-            tmp = array[i];
-            array[i] = array[j];
-            array[j] = tmp;
-            print_array(array, size);
-        }
+        int tmp = array[i];
+        array[i] = array[j];
+        array[j] = tmp;
+
+        print_array(array, size);
     }
+}
+
+void quick_sort_helper(int *array, int low, int high, size_t size)
+{
+    if (low < high)
+    {
+        int p = hoare_partition(array, low, high, size);
+        quick_sort_helper(array, low, p, size);
+        quick_sort_helper(array, p + 1, high, size);
+    }
+}
+
+void quick_sort_hoare(int *array, size_t size)
+{
+    if (!array || size < 2)
+        return;
+
+    quick_sort_helper(array, 0, size - 1, size);
 }
