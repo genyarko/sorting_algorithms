@@ -1,91 +1,75 @@
-#include <stdio.h>
 #include "sort.h"
 
 /**
- * quick_sort - sorts an array of integers in ascending order using Quick sort
- * algorithm
- * @array: pointer to the first element of the array to sort
+ * quick_sort - sorts an array with the Quicksort algorithm
+ * @array: array of ints to sort
  * @size: size of the array
- *
- * Return: void
  */
-
 void quick_sort(int *array, size_t size)
 {
-    if (array == NULL || size < 2)
-        return;
+	if (size < 2)
+		return;
 
-    q_sort(array, 0, size - 1, size);
+	quick_recursion(array, 0, (int)size - 1, size);
 }
 
 /**
- * q_sort - recursive function to sort an array using quick sort
- * @array: pointer to the first element of the array to sort
- * @low: the lowest index of the partition to sort
- * @high: the highest index of the partition to sort
+ * quick_recursion - helper function for Quicksort
+ * @array: array to sort
+ * @left: index of the left element
+ * @right: index of the right element
+ * @size: size of the array
+ */
+void quick_recursion(int *array, int left, int right, size_t size)
+{
+	int piv;
+
+	if (left < right)
+	{
+		piv = partition(array, left, right, size);
+		quick_recursion(array, left, piv - 1, size);
+		quick_recursion(array, piv + 1, right, size);
+	}
+}
+
+/**
+ * partition - gives a piv index for Quicksort
+ * @array: array to find the piv in
+ * @left: index of the left element
+ * @right: index of the right element
  * @size: size of the array
  *
- * Return: void
+ * Return: the index of the piv element
  */
-
-void q_sort(int *array, int low, int high, size_t size)
+int partition(int *array, int left, int right, size_t size)
 {
-    if (low < high)
-    {
-        int pivot = partition(array, low, high, size);
+	int tmp, i;
+	int j;
 
-        q_sort(array, low, pivot - 1, size);
-        q_sort(array, pivot + 1, high, size);
-    }
-}
+	i = left - 1;
 
-/**
- * partition - function to partition the array for quick sort
- * @array: pointer to the first element of the array to sort
- * @low: the lowest index of the partition to sort
- * @high: the highest index of the partition to sort
- * @size: size of the array
- *
- * Return: index of the partition
- */
+	for (j = left; j < right; j++)
+	{
+		if (array[j] < array[right])
+		{
+			i++;
+			if (i != j)
+			{
+				tmp = array[i];
+				array[i] = array[j];
+				array[j] = tmp;
+				print_array(array, size);
+			}
+		}
+	}
 
-int partition(int *array, int low, int high, size_t size)
-{
-    int pivot = array[high], i = low, j;
+	if (array[right] < array[i + 1])
+	{
+		tmp = array[i + 1];
+		array[i + 1] = array[right];
+		array[right] = tmp;
+		print_array(array, size);
+	}
 
-    for (j = low; j < high; j++)
-    {
-        if (array[j] < pivot)
-        {
-            if (i != j)
-            {
-                swap(&array[i], &array[j]);
-                print_array(array, size);
-            }
-            i++;
-        }
-    }
-    if (i != high)
-    {
-        swap(&array[i], &array[high]);
-        print_array(array, size);
-    }
-
-    return (i);
-}
-
-/**
- * swap - swaps two elements of an array
- * @a: pointer to the first element
- * @b: pointer to the second element
- *
- * Return: void
- */
-
-void swap(int *a, int *b)
-{
-    int tmp = *a;
-
-    *a = *b;
-    *b = tmp;
+	return (i + 1);
 }
