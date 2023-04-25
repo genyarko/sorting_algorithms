@@ -1,4 +1,5 @@
 #include "sort.h"
+
 /**
  * heap_sort - sorts an array following the Heap sort algorithm
  * @array: array of ints to sort
@@ -6,54 +7,52 @@
  */
 void heap_sort(int *array, size_t size)
 {
-	int i;
-	int temp;
+	int i, tmp;
 
 	if (size < 2)
 		return;
 
 	for (i = size / 2 - 1; i >= 0; i--)
-		heapify_down(array, size, (size_t)i, size);
+		heapify_down(array, size, i, size);
 
-	for (i = size - 1; i >= 0; i--)
+	for (i = size - 1; i > 0; i--)
 	{
-		temp = array[i];
-		array[i] = array[0];
-		array[0] = temp;
-		if (i != 0)
-			print_array(array, size);
+		tmp = array[0];
+		array[0] = array[i];
+		array[i] = tmp;
+		print_array(array, size);
 		heapify_down(array, (size_t)i, 0, size);
 	}
 }
 
 /**
- * heapify_down - turns an array in a heap tree
+ * heapify_down - turns an array into a heap tree
  * @array: array to turn into heap
- * @s: size of the subtree
- * @root: index of the subtree in the heap
- * @size: size of the whole array
+ * @size: size of the heap
+ * @root: index of the root of the subtree
+ * @orig_size: original size of the array
  */
-void heapify_down(int *array, size_t s, size_t root, size_t size)
+void heapify_down(int *array, size_t size, size_t root, size_t orig_size)
 {
 	size_t max, left, right;
-	int temp;
+	int tmp;
 
 	max = root;
-	left = (root * 2) + 1;
-	right = (root * 2) + 2;
+	left = 2 * root + 1;
+	right = 2 * root + 2;
 
-	if (left < s && array[left] > array[max])
+	if (left < size && array[left] > array[max])
 		max = left;
 
-	if (right < s && array[right] > array[max])
+	if (right < size && array[right] > array[max])
 		max = right;
 
 	if (max != root)
 	{
-		temp = array[root];
+		tmp = array[root];
 		array[root] = array[max];
-		array[max] = temp;
-		print_array(array, size);
-		heapify_down(array, s, max, size);
+		array[max] = tmp;
+		print_array(array, orig_size);
+		heapify_down(array, size, max, orig_size);
 	}
 }
