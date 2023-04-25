@@ -2,7 +2,7 @@
 
 /**
  * bitonic_sort - sorts an array following the Bitonic sort algorithm
- * @array: array of integers to sort
+ * @array: array of ints to sort
  * @size: size of the array
  */
 void bitonic_sort(int *array, size_t size)
@@ -10,32 +10,32 @@ void bitonic_sort(int *array, size_t size)
 	if (!array || size < 2)
 		return;
 
-	bitonic_sort_recursive(array, 0, size - 1, 1, size);
+	recursive_bitonic_sort(array, 0, size - 1, 1, size);
 }
 
 /**
- * bitonic_sort_recursive - recursive function for bitonic sort
+ * recursive_bitonic_sort - recursive function for bitonic sort
  * @array: array to sort
  * @left: index of the left-most element
  * @right: index of the right-most element
  * @direction: ascending or descending
  * @size: size of the array
  */
-void bitonic_sort_recursive(int *array, int left, int right, int direction, size_t size)
+void recursive_bitonic_sort(int *array, int left, int right, int direction, size_t size)
 {
-	int step;
+	int midpoint;
 
 	if (right - left >= 1)
 	{
-		step = (right + left) / 2;
+		midpoint = (right + left) / 2;
 		printf("Merging [%d/%lu] ", right - left + 1, size);
 		if (direction)
 			printf("(UP):\n");
 		else
 			printf("(DOWN):\n");
 		print_array(array + left, right - left + 1);
-		bitonic_sort_recursive(array, left, step, 1, size);
-		bitonic_sort_recursive(array, step + 1, right, 0, size);
+		recursive_bitonic_sort(array, left, midpoint, 1, size);
+		recursive_bitonic_sort(array, midpoint + 1, right, 0, size);
 		bitonic_merge(array, left, right, direction);
 		printf("Result [%d/%lu] ", right - left + 1, size);
 		if (direction)
@@ -55,7 +55,7 @@ void bitonic_sort_recursive(int *array, int left, int right, int direction, size
  */
 void bitonic_merge(int *array, int left, int right, int direction)
 {
-	int tmp, i, step = (left + right) / 2, mid = (right - left + 1) / 2;
+	int tmp, i, midpoint = (left + right) / 2, mid = (right - left + 1) / 2;
 
 	if (right - left >= 1)
 	{
@@ -68,8 +68,9 @@ void bitonic_merge(int *array, int left, int right, int direction)
 				array[i] = tmp;
 			}
 		}
-		bitonic_merge(array, left, step, direction);
-		bitonic_merge(array, step + 1, right, direction);
+		bitonic_merge(array, left, midpoint, direction);
+		bitonic_merge(array, midpoint + 1, right, direction);
 	}
+}
 
 }
