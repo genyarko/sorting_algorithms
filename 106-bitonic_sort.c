@@ -1,3 +1,5 @@
+#include <stdio.h>
+#include <stdlib.h>
 #include "sort.h"
 
 /**
@@ -54,5 +56,19 @@ void bitonic_merge(int *array, size_t low, size_t count, int dir)
 			}
 		}
 
-	
+		bitonic_merge(array, low, k, dir);
+		bitonic_merge(array, low + k, k, dir);
+	}
+}
 
+/**
+ * swap - Swaps two integer values
+ * @a: Pointer to the first integer
+ * @b: Pointer to the second integer
+ */
+void swap(int *a, int *b)
+{
+	int tmp = *a;
+	*a = *b;
+	*b = tmp;
+}
