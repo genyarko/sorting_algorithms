@@ -2,20 +2,43 @@
 #include "sort.h"
 
 /**
- * swap - swaps two elements of an array
- * @a: pointer to the first element
- * @b: pointer to the second element
+ * quick_sort - sorts an array of integers in ascending order using Quick sort
+ * algorithm
+ * @array: pointer to the first element of the array to sort
+ * @size: size of the array
  *
  * Return: void
  */
 
-void swap(int *a, int *b)
+void quick_sort(int *array, size_t size)
 {
-    int tmp = *a;
+    if (array == NULL || size < 2)
+        return;
 
-    *a = *b;
-    *b = tmp;
+    q_sort(array, 0, size - 1, size);
 }
+
+/**
+ * q_sort - recursive function to sort an array using quick sort
+ * @array: pointer to the first element of the array to sort
+ * @low: the lowest index of the partition to sort
+ * @high: the highest index of the partition to sort
+ * @size: size of the array
+ *
+ * Return: void
+ */
+
+void q_sort(int *array, int low, int high, size_t size)
+{
+    if (low < high)
+    {
+        int pivot = partition(array, low, high, size);
+
+        q_sort(array, low, pivot - 1, size);
+        q_sort(array, pivot + 1, high, size);
+    }
+}
+
 /**
  * partition - function to partition the array for quick sort
  * @array: pointer to the first element of the array to sort
@@ -50,41 +73,19 @@ int partition(int *array, int low, int high, size_t size)
 
     return (i);
 }
-void q_sort(int *array, int low, int high, size_t size)
-{
-    if (low < high)
-    {
-        int pivot = partition(array, low, high, size);
-
-        q_sort(array, low, pivot - 1, size);
-        q_sort(array, pivot + 1, high, size);
-    }
-}
-
 
 /**
- * quick_sort - sorts an array of integers in ascending order using Quick sort
- * algorithm
- * @array: pointer to the first element of the array to sort
- * @size: size of the array
+ * swap - swaps two elements of an array
+ * @a: pointer to the first element
+ * @b: pointer to the second element
  *
  * Return: void
  */
 
-void quick_sort(int *array, size_t size)
+void swap(int *a, int *b)
 {
-    if (array == NULL || size < 2)
-        return;
+    int tmp = *a;
 
-    q_sort(array, 0, size - 1, size);
+    *a = *b;
+    *b = tmp;
 }
-
-/**
- * q_sort - recursive function to sort an array using quick sort
- * @array: pointer to the first element of the array to sort
- * @low: the lowest index of the partition to sort
- * @high: the highest index of the partition to sort
- * @size: size of the array
- *
- * Return: void
- */
