@@ -2,56 +2,64 @@
 
 /**
  * quick_sort_hoare - sorts an array with the Quicksort algorithm
- * @array: array of ints to sort
+ * @array: array of integers to sort
  * @size: size of the array
  */
 void quick_sort_hoare(int *array, size_t size)
 {
-	if (array == NULL || size < 2)
-		return;
+    if (array == NULL || size < 2)
+        return;
 
-	quick_recursion(array, 0, size - 1, size);
+    quick_recursion(array, 0, size - 1, size);
 }
 
 /**
- * quick_recursion - helper function for Quicksort
- * @array: array to sort
- * @left: index of the left element
- * @right: index of the right element
+ * quick_recursion - sorts an array with the Quicksort algorithm
+ * @array: array of integers to sort
+ * @left: the first index of the partition to sort
+ * @right: the last index of the partition to sort
  * @size: size of the array
  */
-void quick_recursion(int *array, size_t left, size_t right, size_t size)
+void quick_recursion(int *array, int left, int right, size_t size)
 {
-	size_t pivot_index;
+    int pivot;
 
-	if (left < right)
-	{
-		pivot_index = partition(array, left, right, size);
-		quick_recursion(array, left, pivot_index - 1, size);
-		quick_recursion(array, pivot_index, right, size);
-	}
+    if (left < right)
+    {
+        pivot = partition(array, left, right, size);
+        quick_recursion(array, left, pivot - 1, size);
+        quick_recursion(array, pivot, right, size);
+    }
 }
 
 /**
- * partition - gives a pivot index for Quicksort using Hoare's scheme
- * @array: array to partition
- * @left: index of the left element
- * @right: index of the right element
+ * partition - partitions an array and selects a pivot
+ * @array: array of integers to partition
+ * @left: the first index of the partition to sort
+ * @right: the last index of the partition to sort
  * @size: size of the array
  *
- * Return: the index of the pivot element
+ * Return: the index of the partition
  */
-size_t partition(int *array, size_t left, size_t right, size_t size)
+int partition(int *array, int left, int right, size_t size)
 {
-	int pivot_value = array[right];
-	size_t i = left - 1, j = right + 1;
+    int pivot = array[right];
+    int i = left - 1, j = right + 1, tmp;
 
-	while (1)
-	{
-		do {
-			i++;
-		} while (array[i] < pivot_value);
+    while (1)
+    {
+        do {
+            i++;
+        } while (array[i] < pivot);
+        do {
+            j--;
+        } while (array[j] > pivot);
+        if (i >= j)
+            return (i);
 
-		do {
-			j--;
-	
+        tmp = array[i];
+        array[i] = array[j];
+        array[j] = tmp;
+        print_array(array, size);
+    }
+}
