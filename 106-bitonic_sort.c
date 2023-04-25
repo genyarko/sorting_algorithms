@@ -3,78 +3,69 @@
 #include "sort.h"
 
 /**
- * bitonic_merge - recursive function to merge two bitonic sequences in
- * descending and ascending orders
- * @array: array of integers
- * @size: size of the array
- * @start: starting index of the sequence
- * @count: size of the sequence
- * @direction: direction of sorting, 1 for ascending, 0 for descending
- */
-void bitonic_merge(int *array, size_t size, size_t start, size_t count, int direction)
-{
-    size_t i, j, k, n;
-    int tmp;
-
-    if (count > 1)
-    {
-        size_t m = count / 2;
-
-        printf("Merging [%lu, %lu] (%s):\n", start, start + count - 1, direction ? "UP" : "DOWN");
-        print_array(array + start, count);
-
-        for (i = start, j = start + m; j < start + count; i++, j++)
-        {
-            if ((array[i] > array[j]) == direction)
-            {
-                tmp = array[i];
-                array[i] = array[j];
-                array[j] = tmp;
-
-                printf("Swapped elements\n");
-                print_array(array + start, count);
-            }
-        }
-
-        bitonic_merge(array, size, start, m, direction);
-        bitonic_merge(array, size, start + m, m, direction);
-    }
-}
-
-/**
- * bitonic_sort_recursive - recursive function to sort a bitonic sequence
- * in ascending and descending orders
- * @array: array of integers
- * @size: size of the array
- * @start: starting index of the sequence
- * @count: size of the sequence
- * @direction: direction of sorting, 1 for ascending, 0 for descending
- */
-void bitonic_sort_recursive(int *array, size_t size, size_t start, size_t count, int direction)
-{
-    size_t m = count / 2;
-
-    if (count > 1)
-    {
-        printf("Merging [%lu, %lu] (%s):\n", start, start + count - 1, direction ? "UP" : "DOWN");
-        print_array(array + start, count);
-
-        bitonic_sort_recursive(array, size, start, m, 1);
-        bitonic_sort_recursive(array, size, start + m, m, 0);
-        bitonic_merge(array, size, start, count, direction);
-    }
-}
-
-/**
- * bitonic_sort - sorts an array of integers in ascending order
- * using the Bitonic sort algorithm
- * @array: array of integers
- * @size: size of the array
- */
+ * bitonic_sort - Sorts an array of integers using the Bitonic sort algorithm.
+ * @array: The array of integers to be sorted.
+ * @size: The size of the array to be sorted.
+ **/
 void bitonic_sort(int *array, size_t size)
 {
-    if (array && size > 1 && ((size & (size - 1)) == 0))
+    if (array == NULL || size < 2)
+        return;
+
+    bitonic_sort_helper(array, 0, size, 1);
+}
+
+/**
+ * bitonic_sort_helper - Recursive helper function for bitonic_sort.
+ * @array: The array of integers to be sorted.
+ * @start: The starting index of the subarray to be sorted.
+ * @size: The size of the subarray to be sorted.
+ * @dir: The direction of the sort (1 for ascending, -1 for descending).
+ **/
+void bitonic_sort_helper(int *array, size_t start, size_t size, int dir)
+{
+    if (size > 1)
     {
-        bitonic_sort_recursive(array, size, 0, size, 1);
+        size_t k = size / 2;
+
+        bitonic_sort_helper(array, start, k, 1);
+        bitonic_sort_helper(array, start + k, k, -1);
+        bitonic_merge(array, start, size, dir);
     }
+}
+
+/**
+ * bitonic_merge - Merges two subarrays in a bitonic manner.
+ * @array: The array of integers to be sorted.
+ * @start: The starting index of the subarray to be merged.
+ * @size: The size of the subarray to be merged.
+ * @dir: The direction of the sort (1 for ascending, -1 for descending).
+ **/
+void bitonic_merge(int *array, size_t start, size_t size, int dir)
+{
+    if (size > 1)
+    {
+        size_t k = size / 2, i;
+
+        for (i = start; i < start + k; i++)
+        {
+            if (dir == (array[i] > array[i + k]))
+                swap(&array[i], &array[i + k]), printf("Swap %d <-> %d\n", array[i], array[i + k]);
+        }
+
+        bitonic_merge(array, start, k, dir);
+        bitonic_merge(array, start + k, k, dir);
+    }
+}
+
+/**
+ * swap - Swaps two integer values.
+ * @a: The first integer to be swapped.
+ * @b: The second integer to be swapped.
+ **/
+void swap(int *a, int *b)
+{
+    int temp = *a;
+    *a = *b;
+    *b = temp;
 }
