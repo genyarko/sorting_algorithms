@@ -49,4 +49,9 @@ void quick_sort_hoare(int *array, size_t size);
 void bitonic_sort(int *array, size_t size);
 void bitonic_recursion(int *array, int l, int r, int direction, size_t size);
 void bitonic_merge(int *array, int l, int r, int direction);
+void quick_sort_hoare(int *array, size_t size);
+void quick_recursion(int *array, size_t left, size_t right, size_t size);
+size_t partition(int *array, size_t left, size_t right, size_t size);
+void swap(int *a, int *b);
+void print_array(const int *array, size_t size);
 #endif
