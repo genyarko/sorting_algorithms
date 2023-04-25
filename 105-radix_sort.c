@@ -7,50 +7,53 @@
  */
 void radix_sort(int *array, size_t size)
 {
-	int max;
-	size_t i, lsd;
+    int max_num;
+    size_t i, significant_digit;
 
-	if (!array || size < 2)
-		return;
+    if (!array || size < 2)
+        return;
 
-	max = 0;
-	for (i = 0; i < size; i++)
-		if (array[i] > max)
-			max = array[i];
+    max_num = array[0];
+    for (i = 1; i < size; i++)
+        if (array[i] > max_num)
+            max_num = array[i];
 
-	for (lsd = 1; max / lsd > 0; lsd *= 10)
-	{
-		count_sort_LSD(array, size, lsd);
-		print_array(array, size);
-	}
+    for (significant_digit = 1; max_num / significant_digit > 0; significant_digit *= 10)
+        count_sort_LSD(array, size, significant_digit);
+
+    print_array(array, size);
 }
 
 /**
  * count_sort_LSD - count sort with LSD
  * @array: array to sort
  * @size: size of the array
- * @lsd: least significant digit
+ * @significant_digit: least significant digit
  */
-void count_sort_LSD(int *array, size_t size, size_t lsd)
+void count_sort_LSD(int *array, size_t size, size_t significant_digit)
 {
-	int count_arr[10] = {0}, *out_arr, l, m;
-	size_t k, n;
+    int count_arr[10] = {0};
+    size_t i;
+    int *output;
 
-	out_arr = malloc(sizeof(int) * size);
+    output = malloc(size * sizeof(int));
+    if (!output)
+        return;
 
-	for (k = 0; k < size; k++)
-		count_arr[(array[k] / lsd) % 10]++;
-	for (l = 1; l < 10; l++)
-		count_arr[l] += count_arr[l - 1];
+    for (i = 0; i < size; i++)
+        count_arr[(array[i] / significant_digit) % 10]++;
 
-	for (m = size - 1; m >= 0; m--)
-	{
-		out_arr[count_arr[(array[m] / lsd) % 10] - 1] = array[m];
-		count_arr[(array[m] / lsd) % 10]--;
-	}
+    for (i = 1; i < 10; i++)
+        count_arr[i] += count_arr[i - 1];
 
-	for (n = 0; n < size; n++)
-		array[n] = out_arr[n];
+    for (i = size - 1; i < size; i--)
+    {
+        output[count_arr[(array[i] / significant_digit) % 10] - 1] = array[i];
+        count_arr[(array[i] / significant_digit) % 10]--;
+    }
 
-	free(out_arr);
+    for (i = 0; i < size; i++)
+        array[i] = output[i];
+
+    free(output);
 }
